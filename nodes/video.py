@@ -5,7 +5,7 @@ from conf import register_node, VIDEO_NODE
 from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
-
+import cv2
 
 class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
@@ -51,6 +51,9 @@ class CalcNode_Input(AiNode):
     def evalImplementation(self):
         u_value = self.content.edit.text()
         assert(exists(u_value))
+        cap = cv2.VideoCapture(u_value)
+        assert(cap.isOpened())
+        cap.release()
         # TODO: LOAD FRAMES
         self.value = u_value
         self.markDirty(False)

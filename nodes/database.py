@@ -1,5 +1,7 @@
+from models.detection import Base
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
+from sqlalchemy.engine import create_engine
 from conf import NODE_DATABASE, register_node, VIDEO_NODE
 from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
@@ -8,7 +10,7 @@ from nodeeditor.utils import dumpException
 
 class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
-        self.edit = QLineEdit("", self)
+        self.edit = QLineEdit("SELECT * FROM detections", self)
         self.edit.setAlignment(Qt.AlignLeft)
         self.edit.setObjectName(self.node.content_label_objname)
 
@@ -37,21 +39,30 @@ class CalcNode_Input(AiNode):
     content_label_objname = "ai_node_database"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[])
+        super().__init__(scene, inputs=[2], outputs=[3])
         self.width = 300 
-        self.height = 200
+        self.height = 600
+        self.engine =  create_engine('sqlite:///sqlalchemy_example.db')
+        Base.metadata.create_all(self.engine)
         self.eval()
-
+    
     def initInnerClasses(self):
         self.content = CalcInputContent(self)
         self.grNode = AiGraphicsNode(self)
         self.content.edit.textChanged.connect(self.onInputChanged)
 
     def evalImplementation(self):
-        u_value = self.content.edit.text()
-        assert(exists(u_value))
-        # TODO: LOAD FRAMES
-        self.value = u_value
+        detector = self.getInput(0)
+        if not detector:
+            self.grNode.setToolTip("Input is not connected")
+            self.markInvalid()
+            return
+        if not ("detector" in detector.content_label_objname):
+            self.grNode.setToolTip("Input is an invalid")
+            self.markInvalid()
+            return
+        print(detector.getDetections())
+
         self.markDirty(False)
         self.markInvalid(False)
 
@@ -62,4 +73,4 @@ class CalcNode_Input(AiNode):
 
         self.evalChildren()
 
-        return self.value
+        return None

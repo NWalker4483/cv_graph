@@ -1,17 +1,45 @@
 {
-    "id": 2321384912840,
+    "id": 2132498999048,
     "scene_width": 64000,
     "scene_height": 64000,
     "nodes": [
         {
-            "id": 2320267612232,
+            "id": 2132511981832,
             "title": "Video Loader",
-            "pos_x": -774.0,
-            "pos_y": -290.0,
+            "pos_x": -622.0,
+            "pos_y": -94.0,
             "inputs": [],
             "outputs": [
                 {
-                    "id": 2320267672712,
+                    "id": 2132512054600,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 5,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "value": "data.mp4"
+            },
+            "op_code": 7
+        },
+        {
+            "id": 2076083589960,
+            "title": "SQL DATABASE",
+            "pos_x": 113.0,
+            "pos_y": -82.0,
+            "inputs": [
+                {
+                    "id": 2076083589640,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2076083589768,
                     "index": 0,
                     "multi_edges": true,
                     "position": 5,
@@ -19,44 +47,18 @@
                 }
             ],
             "content": {
-                "value": ""
+                "value": "SELECT * FROM detections"
             },
-            "op_code": 7
+            "op_code": 13
         },
         {
-            "id": 2320267706312,
-            "title": "YoloV4",
-            "pos_x": -436.0,
-            "pos_y": -509.0,
-            "inputs": [
-                {
-                    "id": 2320267705480,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 2320267706120,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
-                    "socket_type": 3
-                }
-            ],
-            "content": {},
-            "op_code": 9
-        },
-        {
-            "id": 2320267737288,
+            "id": 2076105436488,
             "title": "Motion Track",
-            "pos_x": -458.0,
-            "pos_y": 0.0,
+            "pos_x": -218.0,
+            "pos_y": -6.0,
             "inputs": [
                 {
-                    "id": 2320267737992,
+                    "id": 2076105501192,
                     "index": 0,
                     "multi_edges": false,
                     "position": 2,
@@ -65,32 +67,25 @@
             ],
             "outputs": [
                 {
-                    "id": 2320267737928,
+                    "id": 2076105501256,
                     "index": 0,
                     "multi_edges": true,
                     "position": 5,
-                    "socket_type": 1
+                    "socket_type": 2
                 }
             ],
             "content": {},
             "op_code": 10
         },
         {
-            "id": 2320267757448,
-            "title": "Contains People",
-            "pos_x": -92.0,
-            "pos_y": -40.0,
+            "id": 2076161733128,
+            "title": "YoloV4",
+            "pos_x": -239.0,
+            "pos_y": -180.0,
             "inputs": [
                 {
-                    "id": 2320267757832,
+                    "id": 2076161733576,
                     "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                },
-                {
-                    "id": 2320267757896,
-                    "index": 1,
                     "multi_edges": false,
                     "position": 2,
                     "socket_type": 1
@@ -98,176 +93,29 @@
             ],
             "outputs": [
                 {
-                    "id": 2320267757960,
+                    "id": 2076161733256,
                     "index": 0,
                     "multi_edges": true,
                     "position": 5,
-                    "socket_type": 1
+                    "socket_type": 2
                 }
             ],
             "content": {},
-            "op_code": 11
-        },
-        {
-            "id": 2320306070344,
-            "title": "Check Shirt Color",
-            "pos_x": 270.0,
-            "pos_y": -84.0,
-            "inputs": [
-                {
-                    "id": 2320306070472,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                },
-                {
-                    "id": 2320306070600,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 2320306070792,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
-                    "socket_type": 1
-                }
-            ],
-            "content": {},
-            "op_code": 12
-        },
-        {
-            "id": 2320305521160,
-            "title": "Contains People",
-            "pos_x": -83.0,
-            "pos_y": -487.0,
-            "inputs": [
-                {
-                    "id": 2320306138120,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                },
-                {
-                    "id": 2320306137992,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 2320306137416,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
-                    "socket_type": 1
-                }
-            ],
-            "content": {},
-            "op_code": 11
-        },
-        {
-            "id": 2320306137608,
-            "title": "Check Shirt Color",
-            "pos_x": 290.0,
-            "pos_y": -436.0,
-            "inputs": [
-                {
-                    "id": 2320268418888,
-                    "index": 0,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                },
-                {
-                    "id": 2320268419016,
-                    "index": 1,
-                    "multi_edges": false,
-                    "position": 2,
-                    "socket_type": 1
-                }
-            ],
-            "outputs": [
-                {
-                    "id": 2320268418824,
-                    "index": 0,
-                    "multi_edges": true,
-                    "position": 5,
-                    "socket_type": 1
-                }
-            ],
-            "content": {},
-            "op_code": 12
+            "op_code": 9
         }
     ],
     "edges": [
         {
-            "id": 2320305401672,
+            "id": 2076105528136,
             "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320267737992
+            "start": 2132512054600,
+            "end": 2076105501192
         },
         {
-            "id": 2320305424136,
+            "id": 2076105530760,
             "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320267757832
-        },
-        {
-            "id": 2320305548360,
-            "edge_type": 2,
-            "start": 2320267737928,
-            "end": 2320267757896
-        },
-        {
-            "id": 2320306073160,
-            "edge_type": 2,
-            "start": 2320267757960,
-            "end": 2320306070600
-        },
-        {
-            "id": 2320306095112,
-            "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320306070472
-        },
-        {
-            "id": 2320268415368,
-            "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320267705480
-        },
-        {
-            "id": 2320268451080,
-            "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320306138120
-        },
-        {
-            "id": 2320268485640,
-            "edge_type": 2,
-            "start": 2320267706120,
-            "end": 2320306137992
-        },
-        {
-            "id": 2320306094920,
-            "edge_type": 2,
-            "start": 2320267672712,
-            "end": 2320268418888
-        },
-        {
-            "id": 2320268531144,
-            "edge_type": 2,
-            "start": 2320306137416,
-            "end": 2320268419016
+            "start": 2076105501256,
+            "end": 2076083589640
         }
     ]
 }

@@ -4,8 +4,7 @@ from qtpy.QtCore import Qt
 from conf import MOTION_TRACK_NODE, YOLO_V4_NODE, register_node, VIDEO_NODE
 
 from nodes.bases.detector_node_base import DetectorNode, DetectorGraphicsNode
-import os
-
+# 503 Frames
 
 import os,sys,inspect
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -54,6 +53,7 @@ class MVDATracker():
         return self.TB[min(self.TB)[1][-1]] # Return the oldest detection 
 
     def update(self, frame):  # MVDA Run Every Second
+        print(self.frames_read)
         self.frames_read += 1
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         prepped_frame = cv2.blur(gray, (self.blur_size, self.blur_size))
@@ -65,8 +65,9 @@ class MVDATracker():
         # Update the background model {learning_rate} times per second
         if (self.frames_read % (self.framerate // self.learning_rate) == 0):
             self.background_mask = self.backSub.apply(prepped_frame)
-
+        
         if (self.frames_read % (self.framerate//self.detecting_rate) == 0):
+
             self.detections_since_denoising += 1
             boxes = set()  # [(x,y,width,height),]
             contours, _ = cv2.findContours(
@@ -144,10 +145,7 @@ class Node_Input(DetectorNode):
     op_title = "Motion Track"
 
     content_label_objname = "ai_detector_motion"
-    def initUI(self):
-        self.detector = MVDATracker(init_frames=250, detecting_rate=3, detections_per_denoising=5,
-                    framerate=20, max_recovery_distance=100, max_HW_ratio=4)
-        
+
     def evalImplementation(self):
         input_node = self.getInput(0)
         if not input_node:
@@ -158,22 +156,29 @@ class Node_Input(DetectorNode):
             self.grNode.setToolTip("Input is an invalid")
             self.markInvalid()
             return
+        self.detections = []
+        try:
+            self.detector = MVDATracker(init_frames=150, detecting_rate=3, detections_per_denoising=5,
+                framerate=20, max_recovery_distance=100, max_HW_ratio=4)
+        
+            cap = cv2.VideoCapture(input_node.value)
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if not ret: break
+                self.detector.update(frame)
+                out = set() # Show the detections for this round
+                for i in self.detector.TB:
+                    for j in range(len(self.detector.TB[i][1])):
+                        out.add(self.detector.TB[i][1][j])
+                for rect in out:
+                    self.detections.append(rect)
+                    _, ID, rect = rect
+                    x, y, x2, y2 = rect
+        except Exception as e:
+            raise(e)
+        finally:
+            cap.release()
 
-        cap = cv2.VideoCapture(input_node.value)
-
-
-        while True:
-            ret, frame = cap.read()
-            if not ret: break
-            self.detector.update(frame)
-            out_ = set()
-            # Show the detections for this round
-            for i in self.detector.TB:
-                for j in range(len(self.detector.TB[i][1])):
-                    out_.add(self.detector.TB[i][1][j])
-            for rect in out_:
-                _, ID, rect = rect
-                x, y, x2, y2 = rect
 
         # TODO: LOAD FRAMES
         self.markDirty(False)

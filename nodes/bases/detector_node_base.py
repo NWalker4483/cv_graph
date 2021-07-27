@@ -46,9 +46,9 @@ class DetectorContent(QDMNodeContentWidget):
 class DetectorNode(Node):
     icon = ""
     op_code = 0
-    op_title = "Undefined"
+    op_title = "Generic Detector Node"
     content_label = ""
-    content_label_objname = "ai_node_bg"
+    content_label_objname = "ai_detector_gen"
 
     GraphicsNode_class = DetectorGraphicsNode
     NodeContent_class = DetectorContent
@@ -61,9 +61,18 @@ class DetectorNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
 
-
-    def get_src_frame(self):
-        pass
+    def getDetections(self):
+        a = [(492, 14, (1052, 553, 1053, 720)),
+            (486, 16, (668, 562, 742, 720)),
+            (498, 16, (896, 629, 921, 666)),
+            (492, 17, (657, 551, 741, 720)),
+            (498, 18, (559, 576, 586, 676)),
+            (486, 14, (1192, 492, 1280, 720)),
+            (492, 17, (562, 582, 583, 655)),
+            (480, 14, (1188, 488, 1280, 720)),
+            (498, 18, (423, 557, 536, 679)),
+            (492, 14, (1200, 501, 1280, 720))]
+        return a
 
     def initSettings(self):
         super().initSettings()

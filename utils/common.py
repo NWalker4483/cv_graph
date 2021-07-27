@@ -27,7 +27,9 @@ def remove_contained(boxes):  # ? The paper was not clear whether or not partial
 
 def merge_boxes(boxes):
     seen = set()
+    boxes = set(boxes)
     new_boxes = set()
+    merger = set()
     for boxA in boxes:
         seen.add(boxA)
         merged = False
@@ -35,9 +37,15 @@ def merge_boxes(boxes):
             if boxB not in seen:  # Only Check only once and dont check against self
                 if intersection_over_union(boxA, boxB) > 0:  # Touching
                     new_boxes.add(combineBoundingBox(boxA, boxB))
+                    merger.add(boxA)
+                    merger.add(boxB)
                     merged = True
         if not merged:
             new_boxes.add(boxA)
+    # TODO: This is a patch implement a proper fix
+    for box in merger:
+        if box in new_boxes:
+            new_boxes.remove(box)
     return new_boxes if new_boxes == boxes else merge_boxes(new_boxes)
 
 

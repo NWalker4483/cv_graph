@@ -9,7 +9,7 @@ from nodeeditor.node_socket import LEFT_CENTER, RIGHT_CENTER
 from nodeeditor.utils import dumpException
 
 
-class AiGraphicsNode(QDMGraphicsNode):
+class AnalyzerGraphicsNode(QDMGraphicsNode):
     def initSizes(self):
         super().initSizes()
         self.width = 260
@@ -37,21 +37,21 @@ class AiGraphicsNode(QDMGraphicsNode):
         )
 
 
-class AiContent(QDMNodeContentWidget):
+class AnalyzerContent(QDMNodeContentWidget):
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
 
 
-class AiNode(Node):
+class AnalyzerNode(Node):
     icon = ""
     op_code = 0
     op_title = "Undefined"
     content_label = ""
     content_label_objname = "ai_node_bg"
 
-    GraphicsNode_class = AiGraphicsNode
-    NodeContent_class = AiContent
+    GraphicsNode_class = AnalyzerGraphicsNode
+    NodeContent_class = AnalyzerContent
 
     def __init__(self, scene, inputs=[1,1], outputs=[1]):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
