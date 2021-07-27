@@ -2,7 +2,7 @@ from conf import register_node, OP_NODE_ADD, OP_NODE_SUB, OP_NODE_MUL, OP_NODE_D
 from ai_node_base import AiNode
 
 
-@register_node(OP_NODE_ADD)
+# @register_node(OP_NODE_ADD)
 class CalcNode_Add(AiNode):
     icon = "icons/add.png"
     op_code = OP_NODE_ADD
@@ -14,7 +14,7 @@ class CalcNode_Add(AiNode):
         return input1 + input2
 
 
-@register_node(OP_NODE_SUB)
+# @register_node(OP_NODE_SUB)
 class CalcNode_Sub(AiNode):
     icon = "icons/sub.png"
     op_code = OP_NODE_SUB
@@ -25,11 +25,11 @@ class CalcNode_Sub(AiNode):
     def evalOperation(self, input1, input2):
         return input1 - input2
 
-@register_node(OP_NODE_MUL)
+# @register_node(OP_NODE_MUL)
 class CalcNode_Mul(AiNode):
     icon = "icons/mul.png"
     op_code = OP_NODE_MUL
-    op_title = "Multiply"
+    op_title = "Contains People"
     content_label = "*"
     content_label_objname = "calc_node_mul"
 
@@ -37,7 +37,7 @@ class CalcNode_Mul(AiNode):
         print('foo')
         return input1 * input2
 
-@register_node(OP_NODE_DIV)
+# @register_node(OP_NODE_DIV)
 class CalcNode_Div(AiNode):
     icon = "icons/divide.png"
     op_code = OP_NODE_DIV

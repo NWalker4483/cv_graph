@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
-from conf import register_node, VIDEO_NODE
+from conf import YOLO_V4_NODE, register_node, VIDEO_NODE
 from ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
@@ -29,7 +29,7 @@ class CalcInputContent(QDMNodeContentWidget):
 
 from os.path import exists
 
-@register_node(VIDEO_NODE)
+@register_node(YOLO_V4_NODE)
 class CalcNode_Input(AiNode):
     icon = "icons/in.png"
     op_code = VIDEO_NODE
@@ -37,7 +37,7 @@ class CalcNode_Input(AiNode):
     content_label_objname = "ai_node_video"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[1], outputs=[3])
         self.eval()
 
     def initInnerClasses(self):
