@@ -1,57 +1,68 @@
+from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
-from conf import register_node, VIDEO_NODE
+from conf import IS_HUMAN, MOTION_TRACK_NODE, YOLO_V4_NODE, register_node, VIDEO_NODE
 from ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
+import os
 
+
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
+import cv2
+import utils.common as bb
+# A Python based implementation of the algorithm described on https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6928767/ s
 
 class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
-        self.edit = QLineEdit("", self)
-        self.edit.setAlignment(Qt.AlignLeft)
-        self.edit.setObjectName(self.node.content_label_objname)
+        pass
 
     def serialize(self):
         res = super().serialize()
-        res['value'] = self.edit.text()
         return res
 
     def deserialize(self, data, hashmap={}):
         res = super().deserialize(data, hashmap)
         try:
-            value = data['value']
-            self.edit.setText(value)
             return True & res
         except Exception as e:
             dumpException(e)
         return res
 
-from os.path import exists
 
-@register_node(VIDEO_NODE)
+@register_node(IS_HUMAN)
 class CalcNode_Input(AiNode):
     icon = "icons/in.png"
-    op_code = VIDEO_NODE
-    op_title = "Video Loader"
-    content_label_objname = "ai_node_video"
+    op_code = IS_HUMAN
+    op_title = "Contains People"
+    content_label_objname = "ai_node_human"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
-        self.width = 300 
-        self.height = 200
+        super().__init__(scene, inputs=[1,1], outputs=[1])
+        self.detector = MVDATracker()
         self.eval()
 
     def initInnerClasses(self):
         self.content = CalcInputContent(self)
         self.grNode = AiGraphicsNode(self)
-        self.content.edit.textChanged.connect(self.onInputChanged)
 
     def evalImplementation(self):
-        u_value = self.content.edit.text()
-        assert(exists(u_value))
+        input_node = self.getInput(0)
+        if not input_node:
+            self.grNode.setToolTip("Input is not connected")
+            self.markInvalid()
+            return
+        if not (input_node.op_code == VIDEO_NODE):
+            self.grNode.setToolTip("Input is an invalid")
+            self.markInvalid()
+            return
+
+
         # TODO: LOAD FRAMES
-        self.value = u_value
+        self.value = 0
         self.markDirty(False)
         self.markInvalid(False)
 

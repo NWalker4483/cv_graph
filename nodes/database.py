@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
-from conf import register_node, OP_NODE_INPUT
+from conf import NODE_DATABASE, register_node, VIDEO_NODE
 from ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
@@ -8,8 +8,8 @@ from nodeeditor.utils import dumpException
 
 class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
-        self.edit = QLineEdit("1", self)
-        self.edit.setAlignment(Qt.AlignRight)
+        self.edit = QLineEdit("", self)
+        self.edit.setAlignment(Qt.AlignLeft)
         self.edit.setObjectName(self.node.content_label_objname)
 
     def serialize(self):
@@ -27,16 +27,19 @@ class CalcInputContent(QDMNodeContentWidget):
             dumpException(e)
         return res
 
+from os.path import exists
 
-# @register_node(OP_NODE_INPUT)
+@register_node(NODE_DATABASE)
 class CalcNode_Input(AiNode):
-    icon = "icons/in.png"
-    op_code = OP_NODE_INPUT
-    op_title = "Input"
-    content_label_objname = "calc_node_input"
+    icon = "icons/out.png"
+    op_code = NODE_DATABASE
+    op_title = "SQL DATABASE"
+    content_label_objname = "ai_node_database"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[1], outputs=[])
+        self.width = 300 
+        self.height = 200
         self.eval()
 
     def initInnerClasses(self):
@@ -46,8 +49,9 @@ class CalcNode_Input(AiNode):
 
     def evalImplementation(self):
         u_value = self.content.edit.text()
-        s_value = int(u_value)
-        self.value = s_value
+        assert(exists(u_value))
+        # TODO: LOAD FRAMES
+        self.value = u_value
         self.markDirty(False)
         self.markInvalid(False)
 

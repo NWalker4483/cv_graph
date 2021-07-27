@@ -1,15 +1,22 @@
 from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
-from conf import YOLO_V4_NODE, register_node, VIDEO_NODE
+from conf import CHECK_SHIRT, IS_HUMAN, MOTION_TRACK_NODE, YOLO_V4_NODE, register_node, VIDEO_NODE
 from ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
-# ssfrom imageai.Detection import ObjectDetection
 import os
 
 
-class InputContent(QDMNodeContentWidget):
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
+import cv2
+import utils.common as bb
+# A Python based implementation of the algorithm described on https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6928767/ s
+
+class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
         pass
 
@@ -26,24 +33,19 @@ class InputContent(QDMNodeContentWidget):
         return res
 
 
-@register_node(YOLO_V4_NODE)
-class Node_Input(AiNode):
+@register_node(CHECK_SHIRT)
+class CalcNode_Input(AiNode):
     icon = "icons/in.png"
-    op_code = YOLO_V4_NODE
-    op_title = "YoloV4"
-    content_label_objname = "ai_node_yolo"
+    op_code = CHECK_SHIRT
+    op_title = "Check Shirt Color"
+    content_label_objname = "ai_node_human"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[3])
-        execution_path = os.getcwd()
-        # self.detector = ObjectDetection()
-        # self.detector.setModelTypeAsTinyYOLOv3()
-        # self.detector.setModelPath(os.path.join(execution_path, "yolo-tiny.h5"))
-        # self.detector.loadModel()
+        super().__init__(scene, inputs=[1,1], outputs=[1])
         self.eval()
 
     def initInnerClasses(self):
-        self.content = InputContent(self)
+        self.content = CalcInputContent(self)
         self.grNode = AiGraphicsNode(self)
 
     def evalImplementation(self):
@@ -56,16 +58,16 @@ class Node_Input(AiNode):
             self.grNode.setToolTip("Input is an invalid")
             self.markInvalid()
             return
-            
-        execution_path = os.getcwd()
-        detections = self.detector.detectObjectsFromImage(input_image=os.path.join(
-            execution_path, input_node.value), output_image_path=os.path.join(execution_path, "new.jpg"), minimum_percentage_probability=30)
-
-        for eachObject in detections:
-            print(eachObject["name"], " : ", eachObject["percentage_probability"],
-                  " : ", eachObject["box_points"])
-            print("--------------------------------")
-    
+        
+        detector_node = self.getInput(1)
+        if not detector_node:
+            self.grNode.setToolTip("Input is not connected")
+            self.markInvalid()
+            return
+        if not (detector_node.op_code == IS_HUMAN):
+            self.grNode.setToolTip("Input is an invalid")
+            self.markInvalid()
+            return
         # TODO: LOAD FRAMES
         self.value = 0
         self.markDirty(False)
