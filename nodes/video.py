@@ -1,7 +1,8 @@
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
 from conf import register_node, VIDEO_NODE
-from ai_node_base import AiNode, AiGraphicsNode
+
+from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 
@@ -37,7 +38,7 @@ class CalcNode_Input(AiNode):
     content_label_objname = "ai_node_video"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[], outputs=[3])
+        super().__init__(scene, inputs=[], outputs=[1])
         self.width = 300 
         self.height = 200
         self.eval()

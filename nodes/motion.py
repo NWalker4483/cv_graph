@@ -2,9 +2,8 @@ from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
 from conf import MOTION_TRACK_NODE, YOLO_V4_NODE, register_node, VIDEO_NODE
-from ai_node_base import AiNode, AiGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.utils import dumpException
+
+from nodes.bases.detector_node_base import DetectorNode, DetectorGraphicsNode
 import os
 
 
@@ -138,74 +137,45 @@ class MVDATracker():
             self.last_states.append(self.TB[ID][0][-1])
 
 
-class CalcInputContent(QDMNodeContentWidget):
-    def initUI(self):
-        pass # TODO: Display detections length
-
-    def serialize(self):
-        res = super().serialize()
-        return res
-
-    def deserialize(self, data, hashmap={}):
-        res = super().deserialize(data, hashmap)
-        try:
-            return True & res
-        except Exception as e:
-            dumpException(e)
-        return res
-
-
 @register_node(MOTION_TRACK_NODE)
-class CalcNode_Input(AiNode):
+class Node_Input(DetectorNode):
     icon = "icons/in.png"
     op_code = MOTION_TRACK_NODE
     op_title = "Motion Track"
-    content_label_objname = "ai_detector_motions"
 
-    def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[1])
-        self.detector = MVDATracker()
-        self.detections  = []
-        self.eval()
-
-    def initInnerClasses(self):
-        self.content = CalcInputContent(self)
-        self.grNode = AiGraphicsNode(self)
-
+    content_label_objname = "ai_detector_motion"
+    def initUI(self):
+        self.detector = MVDATracker(init_frames=250, detecting_rate=3, detections_per_denoising=5,
+                    framerate=20, max_recovery_distance=100, max_HW_ratio=4)
+        
     def evalImplementation(self):
         input_node = self.getInput(0)
         if not input_node:
             self.grNode.setToolTip("Input is not connected")
             self.markInvalid()
             return
-        if not (input_node.op_code == VIDEO_NODE):
+        if (input_node.op_code != VIDEO_NODE) or input_node.isInvalid():
             self.grNode.setToolTip("Input is an invalid")
             self.markInvalid()
             return
 
         cap = cv2.VideoCapture(input_node.value)
 
-        fgbg = MVDATracker(init_frames=250, detecting_rate=3, detections_per_denoising=5,
-                        framerate=20, max_recovery_distance=100, max_HW_ratio=4)
+
         while True:
             ret, frame = cap.read()
             if not ret: break
-            rects = fgbg.update(frame)
-            mask = fgbg.background_mask
-            res = cv2.bitwise_and(frame, frame, mask=mask)
+            self.detector.update(frame)
             out_ = set()
             # Show the detections for this round
-            for i in fgbg.TB:
-                for j in range(len(fgbg.TB[i][1])):
-                    out_.add(fgbg.TB[i][1][j])
+            for i in self.detector.TB:
+                for j in range(len(self.detector.TB[i][1])):
+                    out_.add(self.detector.TB[i][1][j])
             for rect in out_:
                 _, ID, rect = rect
                 x, y, x2, y2 = rect
 
-                cv2.rectangle(frame, (x, y), (x2, y2), (0, 255, 255), 1)
-
         # TODO: LOAD FRAMES
-        self.value = 0
         self.markDirty(False)
         self.markInvalid(False)
 
@@ -216,4 +186,4 @@ class CalcNode_Input(AiNode):
 
         self.evalChildren()
 
-        return self.value
+        return "self.value"

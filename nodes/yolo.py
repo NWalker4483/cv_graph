@@ -2,7 +2,8 @@ from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
 from conf import YOLO_V4_NODE, register_node, VIDEO_NODE
-from ai_node_base import AiNode, AiGraphicsNode
+
+from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 # ssfrom imageai.Detection import ObjectDetection
@@ -34,7 +35,7 @@ class Node_Input(AiNode):
     content_label_objname = "ai_node_yolo"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1], outputs=[3])
+        super().__init__(scene, inputs=[1], outputs=[2])
         execution_path = os.getcwd()
         # self.detector = ObjectDetection()
         # self.detector.setModelTypeAsTinyYOLOv3()
@@ -52,19 +53,19 @@ class Node_Input(AiNode):
             self.grNode.setToolTip("Input is not connected")
             self.markInvalid()
             return
-        if not (input_node.op_code == VIDEO_NODE):
-            self.grNode.setToolTip("Input is an invalid")
+        if (input_node.op_code != VIDEO_NODE) or input_node.isInvalid():
+            self.grNode.setToolTip("Input node is invalid")
             self.markInvalid()
             return
             
         execution_path = os.getcwd()
-        detections = self.detector.detectObjectsFromImage(input_image=os.path.join(
-            execution_path, input_node.value), output_image_path=os.path.join(execution_path, "new.jpg"), minimum_percentage_probability=30)
+        # detections = self.detector.detectObjectsFromImage(input_image=os.path.join(
+        #     execution_path, input_node.value), output_image_path=os.path.join(execution_path, "new.jpg"), minimum_percentage_probability=30)
 
-        for eachObject in detections:
-            print(eachObject["name"], " : ", eachObject["percentage_probability"],
-                  " : ", eachObject["box_points"])
-            print("--------------------------------")
+        # for eachObject in detections:
+        #     print(eachObject["name"], " : ", eachObject["percentage_probability"],
+        #           " : ", eachObject["box_points"])
+        #     print("--------------------------------")
     
         # TODO: LOAD FRAMES
         self.value = 0

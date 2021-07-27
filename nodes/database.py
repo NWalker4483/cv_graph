@@ -1,7 +1,7 @@
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
 from conf import NODE_DATABASE, register_node, VIDEO_NODE
-from ai_node_base import AiNode, AiGraphicsNode
+from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 

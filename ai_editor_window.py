@@ -22,10 +22,6 @@ Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
 
-# images for the dark skin
-# import examples.example_calculator.qss.nodeeditor_dark_resources
-
-
 DEBUG = True
 
 
