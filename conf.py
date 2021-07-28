@@ -1,25 +1,18 @@
 LISTBOX_MIMETYPE = "application/x-item"
 
-OP_NODE_INPUT = 1
-OP_NODE_OUTPUT = 2
-OP_NODE_ADD = 3
-OP_NODE_SUB = 4
-OP_NODE_MUL = 5
-OP_NODE_DIV = 6
 VIDEO_NODE = 7
 YOLO_V4_NODE = 9
 MOTION_TRACK_NODE = 10
-IS_HUMAN = 11
-CHECK_SHIRT = 12
-NODE_DATABASE = 13
+IS_HUMAN_NODE = 11
+CHECK_SHIRT_NODE = 12
+DATABASE_NODE = 13
+
 NODES = {
 }
-
 
 class ConfException(Exception): pass
 class InvalidNodeRegistration(ConfException): pass
 class OpCodeNotRegistered(ConfException): pass
-
 
 def register_node_now(op_code, class_reference):
     if op_code in NODES:
@@ -38,8 +31,6 @@ def register_node(op_code):
 def get_class_from_opcode(op_code):
     if op_code not in NODES: raise OpCodeNotRegistered("OpCode '%d' is not registered" % op_code)
     return NODES[op_code]
-
-
 
 # import all nodes and register them
 from nodes import *

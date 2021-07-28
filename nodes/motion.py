@@ -1,3 +1,4 @@
+from models.detection import Detection
 from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
@@ -146,6 +147,9 @@ class Node_Input(DetectorNode):
 
     content_label_objname = "ai_detector_motion"
 
+    def getDetections(self):
+        return self.detections
+
     def evalImplementation(self):
         input_node = self.getInput(0)
         if not input_node:
@@ -171,9 +175,9 @@ class Node_Input(DetectorNode):
                     for j in range(len(self.detector.TB[i][1])):
                         out.add(self.detector.TB[i][1][j])
                 for rect in out:
-                    self.detections.append(rect)
-                    _, ID, rect = rect
+                    frame_num, ID, rect = rect
                     x, y, x2, y2 = rect
+                    self.detections.append(Detection(id=ID, frame_num=frame_num, x1 = x, y1 = y, x2 = x2, y2 = y2))
         except Exception as e:
             raise(e)
         finally:

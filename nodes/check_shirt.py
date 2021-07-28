@@ -1,7 +1,7 @@
 from os.path import exists
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
-from conf import CHECK_SHIRT, IS_HUMAN, MOTION_TRACK_NODE, YOLO_V4_NODE, register_node, VIDEO_NODE
+from conf import *
 from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
@@ -30,10 +30,10 @@ class InputContent(QDMNodeContentWidget):
         return res
 
 
-@register_node(CHECK_SHIRT)
+@register_node(CHECK_SHIRT_NODE)
 class Node_Input(AiNode):
     icon = "icons/in.png"
-    op_code = CHECK_SHIRT
+    op_code = CHECK_SHIRT_NODE
     op_title = "Check Shirt Color"
     content_label_objname = "ai_node_shirt"
 
