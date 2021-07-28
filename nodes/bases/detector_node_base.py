@@ -61,18 +61,8 @@ class DetectorNode(Node):
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
 
-    def getDetections(self):
-        a = [(492, 14, (1052, 553, 1053, 720)),
-            (486, 16, (668, 562, 742, 720)),
-            (498, 16, (896, 629, 921, 666)),
-            (492, 17, (657, 551, 741, 720)),
-            (498, 18, (559, 576, 586, 676)),
-            (486, 14, (1192, 492, 1280, 720)),
-            (492, 17, (562, 582, 583, 655)),
-            (480, 14, (1188, 488, 1280, 720)),
-            (498, 18, (423, 557, 536, 679)),
-            (492, 14, (1200, 501, 1280, 720))]
-        return a
+    def getDetections(self):  
+        return []
 
     def initSettings(self):
         super().initSettings()
@@ -121,13 +111,10 @@ class DetectorNode(Node):
             self.grNode.setToolTip(str(e))
             dumpException(e)
 
-
-
     def onInputChanged(self, socket=None):
         print("%s::__onInputChanged" % self.__class__.__name__)
         self.markDirty()
         self.eval()
-
 
     def serialize(self):
         res = super().serialize()

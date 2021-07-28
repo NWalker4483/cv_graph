@@ -52,8 +52,8 @@
         {
             "id": 1935055744776,
             "title": "SQL DATABASE",
-            "pos_x": 108.40625000000068,
-            "pos_y": -63.28125000000034,
+            "pos_x": 351.0,
+            "pos_y": -75.0,
             "inputs": [
                 {
                     "id": 1935055744904,
@@ -80,7 +80,7 @@
                 }
             ],
             "content": {
-                "value": "SELECT * FROM detections WHERE frame_num > 170"
+                "value": "SELECT * FROM detections WHERE frame_num > 160"
             },
             "op_code": 13
         },
@@ -113,8 +113,8 @@
         {
             "id": 1935051913352,
             "title": "Contains People",
-            "pos_x": -574.2656249999993,
-            "pos_y": 64.67187499999986,
+            "pos_x": -634.2656249999993,
+            "pos_y": 21.671874999999858,
             "inputs": [
                 {
                     "id": 1935051913672,
@@ -146,8 +146,8 @@
         {
             "id": 1935001532744,
             "title": "Check Shirt Color",
-            "pos_x": -189.46874999999935,
-            "pos_y": -43.203125000000156,
+            "pos_x": -247.46874999999932,
+            "pos_y": -160.20312500000017,
             "inputs": [
                 {
                     "id": 1935001531208,
@@ -175,6 +175,33 @@
             ],
             "content": {},
             "op_code": 12
+        },
+        {
+            "id": 1720675040008,
+            "title": "Detection Gallery",
+            "pos_x": -233.0,
+            "pos_y": 225.0,
+            "inputs": [
+                {
+                    "id": 1720675054216,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 1720675054280,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                }
+            ],
+            "outputs": [],
+            "content": {
+                "gallery_index": 0
+            },
+            "op_code": 14
         }
     ],
     "edges": [
@@ -207,6 +234,18 @@
             "edge_type": 2,
             "start": 1934901896648,
             "end": 1935051913672
+        },
+        {
+            "id": 1720675057544,
+            "edge_type": 2,
+            "start": 1934901896648,
+            "end": 1720675054216
+        },
+        {
+            "id": 1720690116872,
+            "edge_type": 2,
+            "start": 1934901981512,
+            "end": 1720675054280
         }
     ]
 }

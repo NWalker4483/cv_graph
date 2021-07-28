@@ -1,34 +1,11 @@
-from os.path import exists
-from qtpy.QtWidgets import QLineEdit
-from qtpy.QtCore import Qt
-from conf import YOLO_V4_NODE, register_node, VIDEO_NODE
-
-from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
-from nodeeditor.utils import dumpException
+from conf import *
+from nodes.bases.detector_node_base import DetectorNode
 # ssfrom imageai.Detection import ObjectDetection
 import os
 
 
-class InputContent(QDMNodeContentWidget):
-    def initUI(self):
-        pass
-
-    def serialize(self):
-        res = super().serialize()
-        return res
-
-    def deserialize(self, data, hashmap={}):
-        res = super().deserialize(data, hashmap)
-        try:
-            return True & res
-        except Exception as e:
-            dumpException(e)
-        return res
-
-
 @register_node(YOLO_V4_NODE)
-class Node_Input(AiNode):
+class Node_Input(DetectorNode):
     icon = "icons/in.png"
     op_code = YOLO_V4_NODE
     op_title = "YoloV4"
@@ -42,10 +19,6 @@ class Node_Input(AiNode):
         # self.detector.setModelPath(os.path.join(execution_path, "yolo-tiny.h5"))
         # self.detector.loadModel()
         self.eval()
-
-    def initInnerClasses(self):
-        self.content = InputContent(self)
-        self.grNode = AiGraphicsNode(self)
 
     def evalImplementation(self):
         input_node = self.getInput(0)

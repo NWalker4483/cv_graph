@@ -5,8 +5,8 @@ from qtpy.QtCore import Qt, QSignalMapper
 
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
-from sub_window import CalculatorSubWindow
-from drag_listbox import QDMDragListbox
+from utils.sub_window import SubWindow
+from utils.drag_listbox import QDMDragListbox
 from nodeeditor.utils import dumpException, pp
 from conf import NODES
 
@@ -28,8 +28,8 @@ DEBUG = True
 class AiEditorWindow(NodeEditorWindow):
 
     def initUI(self):
-        self.name_company = 'Blenderfreak'
-        self.name_product = 'Calculator NodeEditor'
+        self.name_company = 'DEPA'
+        self.name_product = 'Computer Vision NodeEditor'
 
         self.stylesheet_filename = os.path.join(os.path.dirname(__file__), "qss/nodeeditor.qss")
         loadStylesheets(
@@ -122,7 +122,7 @@ class AiEditorWindow(NodeEditorWindow):
                         self.mdiArea.setActiveSubWindow(existing)
                     else:
                         # we need to create new subWindow and open the file
-                        nodeeditor = CalculatorSubWindow()
+                        nodeeditor = SubWindow()
                         if nodeeditor.fileLoad(fname):
                             self.statusBar().showMessage("File %s loaded" % fname, 5000)
                             nodeeditor.setTitle()
@@ -246,7 +246,7 @@ class AiEditorWindow(NodeEditorWindow):
         self.statusBar().showMessage("Ready")
 
     def createMdiChild(self, child_widget=None):
-        nodeeditor = child_widget if child_widget is not None else CalculatorSubWindow()
+        nodeeditor = child_widget if child_widget is not None else SubWindow()
         subwnd = self.mdiArea.addSubWindow(nodeeditor)
         subwnd.setWindowIcon(self.empty_icon)
         # nodeeditor.scene.addItemSelectedListener(self.updateEditMenu)

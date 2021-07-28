@@ -1,17 +1,15 @@
 from PyQt5.QtGui import QImage
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from models.detection import Base
 from qtpy.QtWidgets import QLineEdit, QTableWidget, QTableWidgetItem, QGridLayout
 from qtpy.QtCore import Qt
 from sqlalchemy.engine import create_engine
 from conf import *
-from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
+from nodes.bases.ai_node_base import AiNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
-from qtpy.QtGui import QImage, QColor
+from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
-from qtpy.QtWidgets import QLabel
-import sys
+
 from sqlalchemy.orm import Session
 
 class DatabaseGraphicsNode(QDMGraphicsNode):
@@ -41,7 +39,7 @@ class DatabaseGraphicsNode(QDMGraphicsNode):
             QRectF(offset, 0, 24.0, 24.0)
         )
 
-class DatabaseInputContent(QDMNodeContentWidget):
+class DatabaseQueryContent(QDMNodeContentWidget):
     def initUI(self):
         self.layout = QGridLayout(self)
         self.edit = QLineEdit("SELECT * FROM detections", self)
@@ -49,12 +47,12 @@ class DatabaseInputContent(QDMNodeContentWidget):
         self.edit.setObjectName(self.node.content_label_objname)
         self.layout.addWidget(self.edit, 0, 0)
         self.table = QTableWidget(10, 5, self)
-        # self.table.setRowCount(len(colors))
         # self.table.setColumnCount(len(colors[0]) + 1)
         self.table.setHorizontalHeaderLabels(["ID", "Frame Num", "x1", "y1", "x2", "y2"])
         self.layout.addWidget(self.table,1,0,1,2)
 
     def updateTable(self, detections):
+        self.table.setRowCount(len(detections))
         for num, detection in enumerate(detections):
             item_name = QTableWidgetItem(str(detection.id))
             item_code = QTableWidgetItem(str(detection.frame_num))
@@ -62,9 +60,6 @@ class DatabaseInputContent(QDMNodeContentWidget):
             self.table.setItem(num, 1, item_code)
             self.table.setItem(num, 0, item_name)
             self.table.setItem(num, 2, item_color)      
-        pass
-        pass
-
     def serialize(self):
         res = super().serialize()
         res['value'] = self.edit.text()
@@ -84,29 +79,33 @@ class DatabaseInputContent(QDMNodeContentWidget):
 class DatabaseNode(AiNode):
     icon = "icons/out.png"
     op_code = DATABASE_NODE
-    op_title = "SQL DATABASE"
+    op_title = "SQL TABLE"
     content_label_objname = "ai_node_database"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[2], outputs=[2, 3])
-        self.width = 300 
-        self.height = 600
         # TODO Create random or unused filename 
-        self.engine = create_engine('sqlite:///sqlalchemy_example.db')
+        self.engine = create_engine('sqlite:///temp/sqlalchemy.db')
         self.session = Session(self.engine)
         self.session.expire_on_commit = False
         self.model_type = None
         self.eval()
     
     def initInnerClasses(self):
-        self.content = DatabaseInputContent(self)
+        self.content = DatabaseQueryContent(self)
         self.grNode = DatabaseGraphicsNode(self)
         self.content.edit.textChanged.connect(self.runQuery)
 
     def fillDatabase(self, detections):
-        model_type = type(detections[0])
-        model_type.__table__.drop(self.engine)
-        model_type.__table__.create(self.engine)
+        self.model_type = type(detections[0])
+        # WTH Man
+        try:
+            self.model_type.__table__.drop(self.engine)
+        except:
+            pass
+        finally:
+            self.model_type.__table__.create(self.engine)
+
         for detection in detections:
             self.session.add(detection)
         self.session.commit()
@@ -117,7 +116,7 @@ class DatabaseNode(AiNode):
             query = self.content.edit.text()
             rs = self.session.execute(query)
             self.content.updateTable(rs)
-        except:
+        except Exception as e:
             pass
         
 

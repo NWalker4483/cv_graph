@@ -6,6 +6,7 @@ from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
 from nodeeditor.utils import dumpException
 import cv2
+from os.path import exists
 
 class CalcInputContent(QDMNodeContentWidget):
     def initUI(self):
@@ -28,8 +29,6 @@ class CalcInputContent(QDMNodeContentWidget):
             dumpException(e)
         return res
 
-from os.path import exists
-
 @register_node(VIDEO_NODE)
 class CalcNode_Input(AiNode):
     icon = "icons/in.png"
@@ -39,22 +38,32 @@ class CalcNode_Input(AiNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[1])
-        self.width = 300 
-        self.height = 200
+        self.cap = None
         self.eval()
 
     def initInnerClasses(self):
         self.content = CalcInputContent(self)
         self.grNode = AiGraphicsNode(self)
         self.content.edit.textChanged.connect(self.onInputChanged)
+    
+    def grabFrame(self, frame_num):
+        # TODO Preserve Cap
+        self.cap = cv2.VideoCapture(self.value)
+        if self.cap.get(7) > frame_num:
+            self.cap.set(1, frame_num)
+            ret, frame = self.cap.read()
+            if ret:
+                return frame
 
     def evalImplementation(self):
         u_value = self.content.edit.text()
-        assert(exists(u_value))
-        cap = cv2.VideoCapture(u_value)
-        assert(cap.isOpened())
-        cap.release()
-        # TODO: LOAD FRAMES
+        if not exists(u_value):
+            self.grNode.setToolTip(f"Video File {u_value} does not exist")
+            assert(exists(u_value)) #TODO Change to raise
+
+        self.cap = cv2.VideoCapture(u_value)
+        assert(self.cap.isOpened())
+        self.cap.release()
         self.value = u_value
         self.markDirty(False)
         self.markInvalid(False)

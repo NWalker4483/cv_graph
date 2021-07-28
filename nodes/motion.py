@@ -140,7 +140,7 @@ class MVDATracker():
 
 
 @register_node(MOTION_TRACK_NODE)
-class Node_Input(DetectorNode):
+class MotionTrackerNode(DetectorNode):
     icon = "icons/in.png"
     op_code = MOTION_TRACK_NODE
     op_title = "Motion Track"
@@ -149,6 +149,11 @@ class Node_Input(DetectorNode):
 
     def getDetections(self):
         return self.detections
+    def __init__(self, scene):
+        super().__init__(scene, inputs=[1], outputs=[2])
+        self.detections = []
+        self.eval()
+    
 
     def evalImplementation(self):
         input_node = self.getInput(0)
