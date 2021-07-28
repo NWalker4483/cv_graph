@@ -12,6 +12,8 @@ class ShirtCheckerNode(AiNode):
     content_label_objname = "ai_node_shirt"
 
     def __init__(self, scene):
-        super().__init__(scene, inputs=[1,2], outputs=[2])
-       
-        self.eval()
+        super().__init__(scene, inputs=[1,2], outputs=[2])   
+        self.markDirty()
+
+    def evalImplementation(self):
+        return super().evalImplementation()

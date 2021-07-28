@@ -41,7 +41,17 @@ class AiContent(QDMNodeContentWidget):
     def initUI(self):
         lbl = QLabel(self.node.content_label, self)
         lbl.setObjectName(self.node.content_label_objname)
+    def serialize(self):
+        res = super().serialize()
+        return res
 
+    def deserialize(self, data, hashmap={}):
+        res = super().deserialize(data, hashmap)
+        try:
+            return True & res
+        except Exception as e:
+            dumpException(e)
+        return res
 
 class AiNode(Node):
     icon = ""
@@ -60,10 +70,6 @@ class AiNode(Node):
 
         # it's really important to mark all nodes Dirty by default
         self.markDirty()
-
-
-    def get_src_frame(self):
-        pass
 
     def initSettings(self):
         super().initSettings()

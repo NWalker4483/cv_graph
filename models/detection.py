@@ -1,14 +1,5 @@
-class Detection():
-    def __init__(self, id = 0, bbox = [(0,0), (1,1)], frame = 0, category = "unknown"):
-        pass
-    # TODO Look into python datamodels
-
-import os
-import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
  
 Base = declarative_base()
  

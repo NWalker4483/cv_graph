@@ -141,7 +141,6 @@ def load_many(video_nums, preface = "manual", train = False):
         gps_points = np.concatenate((gps_points, gps_points_temp), axis=0)
     return distorted_points, gps_points 
 
-
 def plot_gps(data, height = 7000, buffer = 1000, base_img=None,colors = None): # [[Lat, Long],[Lat, Long], ...]
     # Normalize
     min_lat = np.inf

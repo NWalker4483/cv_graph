@@ -2,16 +2,15 @@ from qtpy.QtWidgets import QLineEdit
 from qtpy.QtCore import Qt
 from conf import register_node, VIDEO_NODE
 
-from nodes.bases.ai_node_base import AiNode, AiGraphicsNode
-from nodeeditor.node_content_widget import QDMNodeContentWidget
+from nodes.bases.ai_node_base import AiContent, AiNode, AiGraphicsNode
 from nodeeditor.utils import dumpException
 import cv2
 from os.path import exists
 
-class CalcInputContent(QDMNodeContentWidget):
+class InputContent(AiContent):
     def initUI(self):
         self.edit = QLineEdit("", self)
-        self.edit.setAlignment(Qt.AlignLeft)
+        self.edit.setAlignment(Qt.AlignCenter)
         self.edit.setObjectName(self.node.content_label_objname)
 
     def serialize(self):
@@ -30,30 +29,31 @@ class CalcInputContent(QDMNodeContentWidget):
         return res
 
 @register_node(VIDEO_NODE)
-class CalcNode_Input(AiNode):
+class VideoInputNode(AiNode):
     icon = "icons/in.png"
     op_code = VIDEO_NODE
     op_title = "Video Loader"
     content_label_objname = "ai_node_video"
+    NodeContent_class = InputContent
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[1])
         self.cap = None
-        self.eval()
+        self.markDirty()
+        
+    def resetVideo(self):
+        pass
 
-    def initInnerClasses(self):
-        self.content = CalcInputContent(self)
-        self.grNode = AiGraphicsNode(self)
-        self.content.edit.textChanged.connect(self.onInputChanged)
-    
+    def grabNextFrame(self):
+        pass
+
     def grabFrame(self, frame_num):
         # TODO Preserve Cap
         self.cap = cv2.VideoCapture(self.value)
-        if self.cap.get(7) > frame_num:
-            self.cap.set(1, frame_num)
-            ret, frame = self.cap.read()
-            if ret:
-                return frame
+        #if self.cap.get(7) > frame_num:
+        self.cap.set(1, frame_num)
+        ret, frame = self.cap.read()
+        return frame
 
     def evalImplementation(self):
         u_value = self.content.edit.text()
@@ -64,6 +64,7 @@ class CalcNode_Input(AiNode):
         self.cap = cv2.VideoCapture(u_value)
         assert(self.cap.isOpened())
         self.cap.release()
+
         self.value = u_value
         self.markDirty(False)
         self.markInvalid(False)

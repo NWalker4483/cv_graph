@@ -134,10 +134,7 @@ class AiEditorWindow(NodeEditorWindow):
 
 
     def about(self):
-        QMessageBox.about(self, "About Calculator NodeEditor Example",
-                "The <b>Calculator NodeEditor</b> example demonstrates how to write multiple "
-                "document interface applications using PyQt5 and NodeEditor. For more information visit: "
-                "<a href='https://www.blenderfreak.com/'>www.BlenderFreak.com</a>")
+        QMessageBox.about(self, "TODO: Update")
 
     def createMenus(self):
         super().createMenus()

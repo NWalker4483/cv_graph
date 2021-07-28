@@ -63,7 +63,7 @@ class GalleryNode(AiNode):
     icon = "icons/out.png"
     op_code = GALLERY_NODE
     op_title = "Detection Gallery"
-    content_label_objname = "ai_node_database"
+    content_label_objname = "ai_node_gallery"
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[1, 2], outputs=[])

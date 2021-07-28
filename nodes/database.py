@@ -126,10 +126,10 @@ class DatabaseNode(AiNode):
             self.grNode.setToolTip("Input is not connected")
             self.markInvalid()
             return
-        if not ("detector" in detector.content_label_objname):
-            self.grNode.setToolTip("Input is an invalid")
-            self.markInvalid()
-            return
+        # if not ("detector" in detector.content_label_objname):
+        #     self.grNode.setToolTip("Input is an invalid")
+        #     self.markInvalid()
+        #     return
 
         self.fillDatabase(detector.getDetections())
         self.runQuery()
