@@ -1,7 +1,8 @@
 
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QPushButton, QGridLayout
 from nodeeditor.node_graphics_node import QDMGraphicsNode
-from qtpy.QtWidgets import QGridLayout, QPushButton, QLabel
+from qtpy.QtWidgets import QLabel
 from conf import *
 from nodes.bases.ai_node_base import AiGraphicsNode, AiNode
 from nodeeditor.node_content_widget import QDMNodeContentWidget
@@ -9,13 +10,18 @@ from nodeeditor.utils import dumpException
 from qtpy.QtGui import QImage
 from qtpy.QtCore import QRectF
 from qtpy.QtCore import Qt
-class DatabaseGraphicsNode(AiGraphicsNode):
+
+class DatabaseGraphicsNode(QDMGraphicsNode):
     def initSizes(self):
         super().initSizes()
         self.width = 500
         self.height = 500
+        self.edge_roundness = 6
+        self.edge_padding = 0
+        self.title_horizontal_padding = 8
+        self.title_vertical_padding = 10
 
-class DatabaseInputContent(QDMNodeContentWidget):
+class GalleryInputContent(QDMNodeContentWidget):
     def initUI(self):
         self.layout = QGridLayout(self)
         self._next = QPushButton('next', self)
@@ -24,9 +30,9 @@ class DatabaseInputContent(QDMNodeContentWidget):
         self.image_frame = QLabel(parent=self)
 
         self.layout = QGridLayout(self)
-        self.layout.addWidget(self._next, 0, 1)
-        self.layout.addWidget(self._prev, 0, 2)
-        self.layout.addWidget(self.image_frame, 1, 0, 1, 2)
+        self.layout.addWidget(self._next, 1, 1)
+        self.layout.addWidget(self._prev, 1, 2)
+        # self.layout.addWidget(self.image_frame, 1, 0, 1, 2)
 
         # self.edit = QLineEdit("SELECT * FROM detections", self)
         # self.edit.setAlignment(Qt.AlignCenter)
@@ -38,11 +44,11 @@ class DatabaseInputContent(QDMNodeContentWidget):
         # self.table.setHorizontalHeaderLabels(["ID", "Frame Num", "x1", "y1", "x2", "y2"])
         # self.layout.addWidget(self.table,1,0,1,2)
 
-    def updateDisplay(self, frame):
-        self.image = frame
-        self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_RGB888).rgbSwapped()
-        self.image_frame.setPixmap(QPixmap.fromImage(self.image))
-        pass
+    # def updateDisplay(self, frame):
+    #     self.image = frame
+    #     self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_RGB888).rgbSwapped()
+    #     self.image_frame.setPixmap(QPixmap.fromImage(self.image))
+    #     pass
 
     def serialize(self):
         res = super().serialize()
@@ -71,7 +77,7 @@ class GalleryNode(AiNode):
         self.eval()
     
     def initInnerClasses(self):
-        self.content = DatabaseInputContent(self)
+        self.content = GalleryInputContent(self)
         self.grNode = DatabaseGraphicsNode(self)
         
         self.content._next.clicked.connect(self.next_img)

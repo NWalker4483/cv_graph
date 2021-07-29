@@ -60,6 +60,7 @@ class DatabaseQueryContent(QDMNodeContentWidget):
             self.table.setItem(num, 1, item_code)
             self.table.setItem(num, 0, item_name)
             self.table.setItem(num, 2, item_color)      
+            
     def serialize(self):
         res = super().serialize()
         res['value'] = self.edit.text()
