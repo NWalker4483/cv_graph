@@ -23,7 +23,6 @@ class DatabaseGraphicsNode(QDMGraphicsNode):
 
 class GalleryInputContent(QDMNodeContentWidget):
     def initUI(self):
-        self.layout = QGridLayout(self)
         self._next = QPushButton('next', self)
         self._prev = QPushButton('previous', self)
         self.gallery_index = 0
@@ -32,7 +31,7 @@ class GalleryInputContent(QDMNodeContentWidget):
         self.layout = QGridLayout(self)
         self.layout.addWidget(self._next, 1, 1)
         self.layout.addWidget(self._prev, 1, 2)
-        # self.layout.addWidget(self.image_frame, 1, 0, 1, 2)
+        self.layout.addWidget(self.image_frame, 2, 1, 1, 2)
 
         # self.edit = QLineEdit("SELECT * FROM detections", self)
         # self.edit.setAlignment(Qt.AlignCenter)
@@ -44,11 +43,10 @@ class GalleryInputContent(QDMNodeContentWidget):
         # self.table.setHorizontalHeaderLabels(["ID", "Frame Num", "x1", "y1", "x2", "y2"])
         # self.layout.addWidget(self.table,1,0,1,2)
 
-    # def updateDisplay(self, frame):
-    #     self.image = frame
-    #     self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_RGB888).rgbSwapped()
-    #     self.image_frame.setPixmap(QPixmap.fromImage(self.image))
-    #     pass
+    def updateDisplay(self, frame):
+        self.image = frame
+        self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_RGB888).rgbSwapped()
+        self.image_frame.setPixmap(QPixmap.fromImage(self.image))
 
     def serialize(self):
         res = super().serialize()
@@ -94,7 +92,41 @@ class GalleryNode(AiNode):
         self.show_img()
 
     def show_img(self):
-        pass
+        input_node = self.getInput(0)
+        if not input_node:
+            self.grNode.setToolTip("Input is not connected")
+            self.markInvalid()
+            return
+        if (input_node.op_code != VIDEO_NODE) or input_node.isInvalid():
+            self.grNode.setToolTip("Input is an invalid")
+            self.markInvalid()
+            return
+
+        detector = self.getInput(1)
+        if not detector:
+            self.grNode.setToolTip("Input is not connected")
+            self.markInvalid()
+            return
+
+        if not ("detector" in detector.content_label_objname):
+            self.grNode.setToolTip("Input is an invalid")
+            self.markInvalid()
+            return
+        
+        det = detector.getDetections()
+        if len(det) > 0:
+            frame_num = det[self.gallery_index].frame_num
+            img = input_node.grabFrame(frame_num)
+            if type(img) != type(None):
+                self.content.updateDisplay(img)
+
+                self.markDirty(False)
+                self.markInvalid(False)
+
+                self.markDescendantsInvalid(False)
+                self.markDescendantsDirty()
+
+                self.grNode.setToolTip("")
     def evalImplementation(self):
         input_node = self.getInput(0)
         if not input_node:
@@ -118,7 +150,7 @@ class GalleryNode(AiNode):
         self.gallery_index = 0 
         detector.getDetections()
         img = input_node.grabFrame(50)
-        if img != None:
+        if type(img) != type(None):
             self.content.updateDisplay(img)
 
             self.markDirty(False)

@@ -51,7 +51,7 @@ class VideoInputNode(AiNode):
         # TODO Preserve Cap
         self.cap = cv2.VideoCapture(self.value)
         #if self.cap.get(7) > frame_num:
-        self.cap.set(1, frame_num)
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num - 1)
         ret, frame = self.cap.read()
         return frame
 

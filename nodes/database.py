@@ -62,8 +62,6 @@ class DatabaseInputContent(QDMNodeContentWidget):
             self.table.setItem(num, 1, item_code)
             self.table.setItem(num, 0, item_name)
             self.table.setItem(num, 2, item_color)      
-        pass
-        pass
 
     def serialize(self):
         res = super().serialize()
@@ -105,8 +103,12 @@ class DatabaseNode(AiNode):
 
     def fillDatabase(self, detections):
         model_type = type(detections[0])
-        model_type.__table__.drop(self.engine)
-        model_type.__table__.create(self.engine)
+        try:
+            model_type.__table__.drop(self.engine)
+        except:
+            print("Failed to Delete")
+        finally:
+            model_type.__table__.create(self.engine)
         for detection in detections:
             self.session.add(detection)
         self.session.commit()
